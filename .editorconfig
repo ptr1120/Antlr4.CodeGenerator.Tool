@@ -1,0 +1,48 @@
+root=true
+
+[*]
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 4
+insert_final_newline = false
+
+
+[*.{cs,json,config,csproj,js,tsx,xml,cmd,ps1,html,yml}]
+charset = utf-8
+
+
+[*.cs]
+max_line_length = 150
+# Code style/Formatting
+# https://docs.microsoft.com/en-us/visualstudio/ide/editorconfig-code-style-settings-reference
+csharp_new_line_before_open_brace = all
+csharp_new_line_before_else =  true
+csharp_new_line_before_catch = true
+csharp_new_line_before_finally = true
+csharp_new_line_before_members_in_object_initializers = true
+csharp_indent_case_contents = true
+csharp_indent_switch_labels = true
+csharp_space_after_cast = true
+csharp_preserve_single_line_statements = false
+csharp_preserve_single_line_blocks = true
+csharp_space_before_colon_in_inheritance_clause = true
+csharp_space_after_colon_in_inheritance_clause = true
+csharp_space_around_binary_operators = before_and_after
+csharp_prefer_braces = true
+dotnet_style_require_accessibility_modifiers = always
+csharp_space_within_single_line_array_initializer_braces = true
+csharp_keep_existing_attribute_arrangement = true
+
+# Resharper https://www.jetbrains.com/help/rider/EditorConfig_CSHARP_LineBreaksPageSchema.html#resharper_csharp_keep_existing_expr_member_arrangement
+keep_existing_linebreaks = true
+keep_existing_attribute_arrangement = false
+place_type_constraints_on_same_line = false
+place_constructor_initializer_on_same_line = false
+wrap_before_ternary_opsigns = true
+wrap_before_binary_opsign = true
+wrap_chained_binary_expressions = chop_if_long
+csharp_keep_existing_arrangement = true
+# Naming Conventions https://docs.microsoft.com/en-us/visualstudio/ide/editorconfig-naming-conventions
+dotnet_naming_style.pascal_case_style.capitalization = pascal_case
+dotnet_naming_rule.public_members_must_be_capitalized.symbols = public_symbols
+
