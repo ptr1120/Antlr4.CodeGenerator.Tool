@@ -46,7 +46,8 @@ class Build : NukeBuild
     [Parameter("The ANTLR Java tool version.")]
     readonly string AntlrVersion = "4.8";
 
-    string NugetApiKey;
+    [Parameter("NuGet Api Key")]
+    readonly string NugetApiKey;
 
     [Parameter("NuGet Source for Packages")]
     readonly string NugetSource = "https://api.nuget.org/v3/index.json";
@@ -79,9 +80,10 @@ class Build : NukeBuild
     const string ReleaseBranchPrefix = "release";
     const string HotfixBranchPrefix = "hotfix";
 
-    AbsolutePath CommandLine => IsWin
-        ? (AbsolutePath) ToolPathResolver.GetPathExecutable("powershell")
-        : (AbsolutePath) ToolPathResolver.GetPathExecutable("bash");
+    bool DoPublishNuget => GitRepository.Branch.EqualsOrdinalIgnoreCase(MasterBranch)
+                           || GitRepository.Branch.EqualsOrdinalIgnoreCase(DevelopBranch)
+                           || GitRepository.Branch.EqualsOrdinalIgnoreCase(HotfixBranchPrefix)
+                           || GitRepository.Branch.EqualsOrdinalIgnoreCase(ReleaseBranchPrefix);
 
     Project ToolProject => Solution.GetProject("Antlr4.CodeGenerator.Tool");
     string TooId => "Antlr4CodeGenerator.Tool";
@@ -199,16 +201,16 @@ class Build : NukeBuild
     Target PublishNuget => _ => _
         .DependsOn(InstallTool)
         .Consumes(PackNuget)
-        .OnlyWhenDynamic(() => GitRepository.Branch.EqualsOrdinalIgnoreCase(MasterBranch))
+        .OnlyWhenDynamic(() => DoPublishNuget)
         .Requires(() => GitHasCleanWorkingCopy())
         .Requires(() => Configuration.Equals(Configuration.Release))
         .Executes(() =>
         {
-            NugetApiKey = Environment.GetEnvironmentVariable("NugetApiKey");
-            NugetApiKey.NotEmpty();
+            var apiKey = NugetApiKey ?? Environment.GetEnvironmentVariable("NUGET_API_KEY");
+            apiKey.NotEmpty();
             DotNetNuGetPush(_ => _
                     .SetSource(NugetSource)
-                    .SetApiKey(NugetApiKey)
+                    .SetApiKey(apiKey)
                     .SetSymbolSource(SymbolSource)
                     .CombineWith(
                         NugetOutputPath.GlobFiles("*.nupkg").NotEmpty(), (_, v) => _
