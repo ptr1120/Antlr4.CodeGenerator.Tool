@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "isRoot": true,
+  "tools": {
+    "antlr4.codegenerator.tool": {
+        "version": "0.1.0-initial0001",
+      "commands": [
+        "antlr4-tool"
+      ]
+    }
+  }
+}

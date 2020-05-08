@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+    <PropertyGroup>
+        <LangVersion>8</LangVersion>
+        <NoWarn>1701;1702;1591</NoWarn>
+        <DebugSymbols>True</DebugSymbols>
+        <DebugType>full</DebugType>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <Description>ANTLR 4 parser generator command line tool.</Description>
+        <Version Condition="'$(Version)'==''">0.0.0.0</Version>
+        <Authors>Peter Bruch</Authors>
+        <Copyright>Copyright $([System.DateTime]::Now.Year)</Copyright>
+        <PackageTags>Antlr Antlr4 parser parser-generator cli</PackageTags>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageProjectUrl>https://github.com/ptr1120/Antlr4.CodeGenerator.Tool</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/ptr1120/Antlr4.CodeGenerator.Tool</RepositoryUrl>
+    </PropertyGroup>
+
+</Project>
