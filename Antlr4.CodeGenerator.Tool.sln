@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Antlr4.CodeGenerator.Tool", "src\Tool\Tool.csproj", "{D757E2EC-810B-4225-8ADA-42A4516E994E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionFolder", "SolutionFolder", "{6BB4BC39-45FE-4FFF-B156-5ED05A3C6BB6}"
+ProjectSection(SolutionItems) = preProject
+	.gitignore = .gitignore
+	Changelog.md = Changelog.md
+	README.md = README.md
+	.editorconfig = .editorconfig
+	LICENSE = LICENSE
+	Directory.Build.props = Directory.Build.props
+	azure-pipelines.yml = azure-pipelines.yml
+	.config\dotnet-tools.json = .config\dotnet-tools.json
+EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "build", "build\_build.csproj", "{C07898E8-FDDA-435F-9534-08E8955D0FD0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{EB08F5CF-FAB0-4DBE-A3AF-BD168DB6E9F8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{67B5EE68-D916-4A1B-8043-2EF738F94785}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calculator", "samples\Calculator\Calculator.csproj", "{380DC786-BCEC-4912-B113-EC75F0CCDBD4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C07898E8-FDDA-435F-9534-08E8955D0FD0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C07898E8-FDDA-435F-9534-08E8955D0FD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D757E2EC-810B-4225-8ADA-42A4516E994E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D757E2EC-810B-4225-8ADA-42A4516E994E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D757E2EC-810B-4225-8ADA-42A4516E994E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D757E2EC-810B-4225-8ADA-42A4516E994E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{380DC786-BCEC-4912-B113-EC75F0CCDBD4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{380DC786-BCEC-4912-B113-EC75F0CCDBD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{380DC786-BCEC-4912-B113-EC75F0CCDBD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{380DC786-BCEC-4912-B113-EC75F0CCDBD4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C07898E8-FDDA-435F-9534-08E8955D0FD0} = {EB08F5CF-FAB0-4DBE-A3AF-BD168DB6E9F8}
+		{380DC786-BCEC-4912-B113-EC75F0CCDBD4} = {67B5EE68-D916-4A1B-8043-2EF738F94785}
+	EndGlobalSection
+EndGlobal

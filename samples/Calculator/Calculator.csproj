@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Antlr4.Runtime.Standard" Version="4.8.0" />
+    </ItemGroup>
+
+    <Target Name="GenerateAntlrArtifacts" BeforeTargets="BeforeResolveReferences">
+        <PropertyGroup>
+            <_GrammarFile>$(ProjectDir)calculator.g4</_GrammarFile>
+            <_Generated>$(ProjectDir)generated\</_Generated>
+            <_Namespace>MyCalculator</_Namespace>
+        </PropertyGroup>
+        <Exec Command="dotnet antlr4-tool -Dlanguage=CSharp  -o $(_Generated) -visitor -listener -package $(_Namespace)  $(_GrammarFile)" />
+    </Target>
+
+</Project>
