@@ -46,8 +46,7 @@ class Build : NukeBuild
     [Parameter("The ANTLR Java tool version.")]
     readonly string AntlrVersion = "4.8";
 
-    [Parameter("NuGet Api Key")]
-    readonly string NugetApiKey = Environment.GetEnvironmentVariable("NugetApiKey");
+    string NugetApiKey;
 
     [Parameter("NuGet Source for Packages")]
     readonly string NugetSource = "https://api.nuget.org/v3/index.json";
@@ -205,6 +204,7 @@ class Build : NukeBuild
         .Requires(() => Configuration.Equals(Configuration.Release))
         .Executes(() =>
         {
+            NugetApiKey = Environment.GetEnvironmentVariable("NugetApiKey");
             NugetApiKey.NotEmpty();
             DotNetNuGetPush(_ => _
                     .SetSource(NugetSource)
