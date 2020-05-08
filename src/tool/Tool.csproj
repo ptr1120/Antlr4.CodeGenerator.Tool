@@ -7,6 +7,7 @@
         <ToolCommandName>antlr4-tool</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
         <ProductName>Antlr4.CodeGenerator.Tool</ProductName>
+        <PackageId>Antlr4CodeGenerator.Tool</PackageId>
         <AssemblyName>$(ProductName)</AssemblyName>
         <RootNamespace>$(ProductName)</RootNamespace>
         <Version>1.0.1</Version>

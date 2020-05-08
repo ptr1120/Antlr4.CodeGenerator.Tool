@@ -5,7 +5,7 @@
 [![Build Status master](https://dev.azure.com/pbruch0060/pbruch/_apis/build/status/ptr1120.Antlr4.CodeGenerator.Tool?branchName=master)](https://dev.azure.com/pbruch0060/pbruch/_build/latest?definitionId=1&branchName=master)
 [![Build Status develop](https://dev.azure.com/pbruch0060/pbruch/_apis/build/status/ptr1120.Antlr4.CodeGenerator.Tool?branchName=develop)](https://dev.azure.com/pbruch0060/pbruch/_build/latest?definitionId=1&branchName=develop)
 
-[![Latest Release](https://img.shields.io/nuget/v/Antlr4.CodeGenerator.Tool?logo=nuget&label=release&style=for-the-badge)](https://www.nuget.org/packages/Antlr4.CodeGenerator.Tool)
+[![Latest Release](https://img.shields.io/nuget/v/Antlr4CodeGenerator.Tool?logo=nuget&label=release&style=for-the-badge)](https://www.nuget.org/packages/Antlr4CodeGenerator.Tool)
 
 
 Just a commandline wrapper around the ANTLR (Java) tool ([Version 4.8](https://www.antlr.org/download/antlr-4.8-complete.jar)) for generating grammar artifacts.
@@ -20,7 +20,7 @@ The ANTLR (Java) tool is *bundled*, so no need to download it.
 
 * Install as dotnet **global tool**:
 
-  ```dotnet tool install --global Antlr4.CodeGenerator.Tool```
+  ```dotnet tool install --global Antlr4CodeGenerator.Tool```
 
 * Install as dotnet **local tool** (inside a dotnet project where you want to generate language artifacts):
     * See also [sample project](samples/Calculator)
@@ -30,7 +30,7 @@ The ANTLR (Java) tool is *bundled*, so no need to download it.
 
     * Install as local tool to your project:
 
-    ```dotnet tool install Antlr4.CodeGenerator.Tool```
+    ```dotnet tool install Antlr4CodeGenerator.Tool```
 
 ## Usage
 
