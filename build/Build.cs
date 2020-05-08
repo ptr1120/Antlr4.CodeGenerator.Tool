@@ -47,7 +47,7 @@ class Build : NukeBuild
     readonly string AntlrVersion = "4.8";
 
     [Parameter("NuGet Api Key")]
-    readonly string NugetApiKey;
+    readonly string NugetApiKey = Environment.GetEnvironmentVariable("NugetApiKey");
 
     [Parameter("NuGet Source for Packages")]
     readonly string NugetSource = "https://api.nuget.org/v3/index.json";
