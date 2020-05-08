@@ -85,6 +85,7 @@ class Build : NukeBuild
         : (AbsolutePath) ToolPathResolver.GetPathExecutable("bash");
 
     Project ToolProject => Solution.GetProject("Antlr4.CodeGenerator.Tool");
+    string TooId => "Antlr4CodeGenerator.Tool";
 
     Target Clean => _ => _
         .Before(Restore)
@@ -192,12 +193,12 @@ class Build : NukeBuild
         .Consumes(PackNuget)
         .Executes(() =>
         {
-            ControlFlow.SuppressErrors(() => DotNet($"tool uninstall -g {ToolProject.Name}"));
-            DotNet($"tool install -g {ToolProject.Name} --add-source {NugetOutputPath} --version {GitVersion.NuGetVersionV2}");
+            ControlFlow.SuppressErrors(() => DotNet($"tool uninstall -g {TooId}"));
+            DotNet($"tool install -g {TooId} --add-source {NugetOutputPath} --version {GitVersion.NuGetVersionV2}");
         });
 
     Target PublishNuget => _ => _
-        .DependsOn(Clean, PackNuget)
+        .DependsOn(InstallTool)
         .Consumes(PackNuget)
         .OnlyWhenDynamic(() => GitRepository.Branch.EqualsOrdinalIgnoreCase(MasterBranch))
         .Requires(() => GitHasCleanWorkingCopy())

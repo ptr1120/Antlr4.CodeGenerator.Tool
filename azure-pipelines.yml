@@ -48,7 +48,7 @@ stages:
               script: './build.cmd InstallTool --skip'
       - job: PublishNuget
         displayName: 'PublishNuget'
-        dependsOn: [ PackNuget ]
+        dependsOn: [ InstallTool ]
         steps:
           - task: DownloadBuildArtifacts@0
             displayName: Download Nuget artifacts
