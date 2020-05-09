@@ -80,9 +80,9 @@ class Build : NukeBuild
     const string ReleaseBranchPrefix = "release";
     const string HotfixBranchPrefix = "hotfix";
 
-    bool DoPublishNuget => GitRepository.Branch.EqualsOrdinalIgnoreCase(MasterBranch)
-                           || GitRepository.Branch.EqualsOrdinalIgnoreCase(HotfixBranchPrefix)
-                           || GitRepository.Branch.EqualsOrdinalIgnoreCase(ReleaseBranchPrefix);
+    bool DoPublishNuget => GitRepository.IsOnMasterBranch()
+                           ||GitRepository.IsOnHotfixBranch()
+                           || GitRepository.IsOnReleaseBranch();
 
     Project ToolProject => Solution.GetProject("Antlr4.CodeGenerator.Tool");
     string TooId => "Antlr4CodeGenerator.Tool";
@@ -91,6 +91,7 @@ class Build : NukeBuild
         .Before(Restore)
         .Executes(() =>
         {
+
             SourceDirectory.GlobDirectories("**/bin", "**/obj").ForEach(DeleteDirectory);
             TestsDirectory.GlobDirectories("**/bin", "**/obj").ForEach(DeleteDirectory);
             EnsureCleanDirectory(ArtifactsDirectory);
