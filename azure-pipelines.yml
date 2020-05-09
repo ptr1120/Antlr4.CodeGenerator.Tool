@@ -57,4 +57,4 @@ stages:
               downloadPath: $(Build.SourcesDirectory)/.artifacts
           - task: CmdLine@2
             inputs:
-              script: './build.cmd PublishNuget --skip'
+              script: './build.cmd PublishNuget --nuget-api-key $(NugetApiKey) --skip'

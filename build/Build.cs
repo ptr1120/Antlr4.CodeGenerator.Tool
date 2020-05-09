@@ -47,7 +47,7 @@ class Build : NukeBuild
     readonly string AntlrVersion = "4.8";
 
     [Parameter("NuGet Api Key")]
-    readonly string NugetApiKey = Environment.GetEnvironmentVariable("NugetApiKey");
+    readonly string NugetApiKey;
 
     [Parameter("NuGet Source for Packages")]
     readonly string NugetSource = "https://api.nuget.org/v3/index.json";
@@ -80,9 +80,9 @@ class Build : NukeBuild
     const string ReleaseBranchPrefix = "release";
     const string HotfixBranchPrefix = "hotfix";
 
-    AbsolutePath CommandLine => IsWin
-        ? (AbsolutePath) ToolPathResolver.GetPathExecutable("powershell")
-        : (AbsolutePath) ToolPathResolver.GetPathExecutable("bash");
+    bool DoPublishNuget => GitRepository.IsOnMasterBranch()
+                           ||GitRepository.IsOnHotfixBranch()
+                           || GitRepository.IsOnReleaseBranch();
 
     Project ToolProject => Solution.GetProject("Antlr4.CodeGenerator.Tool");
     string TooId => "Antlr4CodeGenerator.Tool";
@@ -91,6 +91,7 @@ class Build : NukeBuild
         .Before(Restore)
         .Executes(() =>
         {
+
             SourceDirectory.GlobDirectories("**/bin", "**/obj").ForEach(DeleteDirectory);
             TestsDirectory.GlobDirectories("**/bin", "**/obj").ForEach(DeleteDirectory);
             EnsureCleanDirectory(ArtifactsDirectory);
@@ -200,7 +201,7 @@ class Build : NukeBuild
     Target PublishNuget => _ => _
         .DependsOn(InstallTool)
         .Consumes(PackNuget)
-        .OnlyWhenDynamic(() => GitRepository.Branch.EqualsOrdinalIgnoreCase(MasterBranch))
+        .OnlyWhenDynamic(() => DoPublishNuget)
         .Requires(() => GitHasCleanWorkingCopy())
         .Requires(() => Configuration.Equals(Configuration.Release))
         .Executes(() =>

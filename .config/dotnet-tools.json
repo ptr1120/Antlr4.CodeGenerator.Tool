@@ -3,7 +3,7 @@
   "isRoot": true,
   "tools": {
     "antlr4codegenerator.tool": {
-        "version": "0.1.0-initial0001",
+        "version": "1.1.0",
       "commands": [
         "antlr4-tool"
       ]
