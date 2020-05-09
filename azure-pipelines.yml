@@ -56,7 +56,5 @@ stages:
               artifactName: 'nupkg'
               downloadPath: $(Build.SourcesDirectory)/.artifacts
           - task: CmdLine@2
-            env:
-                NUGET_API_KEY: $(NugetApiKey)
             inputs:
-              script: './build.cmd PublishNuget --skip'
+              script: './build.cmd PublishNuget --nuget-api-key $(NugetApiKey) --skip'

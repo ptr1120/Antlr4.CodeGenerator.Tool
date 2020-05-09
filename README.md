@@ -22,17 +22,23 @@ The ANTLR (Java) tool is *bundled*, so no need to download it.
 
 * Install as dotnet **global tool**:
 
-  ```dotnet tool install --global Antlr4CodeGenerator.Tool```
+  ```shell
+  dotnet tool install --global Antlr4CodeGenerator.Tool
+  ```
 
 * Install as dotnet **local tool** (inside a dotnet project where you want to generate language artifacts):
     * See also [sample project](samples/Calculator)
     * Enable local dotnet tools for your project by the following command on solution file directory level:
 
-    ```dotnet new tool-manifest```
+    ```shell
+    dotnet new tool-manifest
+    ```
 
     * Install as local tool to your project:
 
-    ```dotnet tool install Antlr4CodeGenerator.Tool```
+    ```shell
+    dotnet tool install Antlr4CodeGenerator.Tool
+    ```
 
 ## Usage
 
@@ -40,12 +46,14 @@ This tool only proxies the arguments to the ANTLR (Java) tool. (See also [ANTLR 
 
 * **global tool**:
 
-    ```dotnet antlr4-tool -Dlanguage=CSharp MyGrammar.g4```
+    ```shell
+    dotnet antlr4-tool -Dlanguage=CSharp MyGrammar.g4
+    ```
 
 * **local tool** via MsBuild target:
     * See also [sample project](samples/Calculator)
 
-    ```
+    ```xml
     <Target Name="GenerateAntlrArtifacts" BeforeTargets="BeforeResolveReferences">
       <PropertyGroup>
         <_GrammarFile>$(ProjectDir)calculator.g4</_GrammarFile>

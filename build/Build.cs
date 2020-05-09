@@ -81,7 +81,6 @@ class Build : NukeBuild
     const string HotfixBranchPrefix = "hotfix";
 
     bool DoPublishNuget => GitRepository.Branch.EqualsOrdinalIgnoreCase(MasterBranch)
-                           || GitRepository.Branch.EqualsOrdinalIgnoreCase(DevelopBranch)
                            || GitRepository.Branch.EqualsOrdinalIgnoreCase(HotfixBranchPrefix)
                            || GitRepository.Branch.EqualsOrdinalIgnoreCase(ReleaseBranchPrefix);
 
@@ -206,11 +205,10 @@ class Build : NukeBuild
         .Requires(() => Configuration.Equals(Configuration.Release))
         .Executes(() =>
         {
-            var apiKey = NugetApiKey ?? Environment.GetEnvironmentVariable("NUGET_API_KEY");
-            apiKey.NotEmpty();
+            NugetApiKey.NotEmpty();
             DotNetNuGetPush(_ => _
                     .SetSource(NugetSource)
-                    .SetApiKey(apiKey)
+                    .SetApiKey(NugetApiKey)
                     .SetSymbolSource(SymbolSource)
                     .CombineWith(
                         NugetOutputPath.GlobFiles("*.nupkg").NotEmpty(), (_, v) => _
