@@ -81,7 +81,7 @@ class Build : NukeBuild
     const string HotfixBranchPrefix = "hotfix";
 
     bool DoPublishNuget => GitRepository.IsOnMasterBranch()
-                           ||GitRepository.IsOnHotfixBranch()
+                           || GitRepository.IsOnHotfixBranch()
                            || GitRepository.IsOnReleaseBranch();
 
     Project ToolProject => Solution.GetProject("Antlr4.CodeGenerator.Tool");
@@ -91,7 +91,6 @@ class Build : NukeBuild
         .Before(Restore)
         .Executes(() =>
         {
-
             SourceDirectory.GlobDirectories("**/bin", "**/obj").ForEach(DeleteDirectory);
             TestsDirectory.GlobDirectories("**/bin", "**/obj").ForEach(DeleteDirectory);
             EnsureCleanDirectory(ArtifactsDirectory);
@@ -114,6 +113,8 @@ class Build : NukeBuild
         .DependsOn(Clean, DownloadAntlrTool)
         .Executes(() =>
         {
+            ProcessTasks.StartProcess("dotnet", "tool restore")
+                .AssertZeroExitCode();
             DotNetRestore(s => s
                 .SetProjectFile(Solution));
         });
@@ -123,10 +124,6 @@ class Build : NukeBuild
         .DependsOn(Restore)
         .Executes(() =>
         {
-            var projectsToBuild = new[]
-            {
-                ToolProject,
-            };
             DotNetBuild(_ => _
                 .SetProjectFile(Solution)
                 .SetConfiguration(Configuration)
@@ -134,8 +131,6 @@ class Build : NukeBuild
                 .SetFileVersion(GitVersion.AssemblySemFileVer)
                 .SetInformationalVersion(GitVersion.InformationalVersion)
                 .EnableNoRestore()
-                .CombineWith(projectsToBuild, (_, p) => _
-                    .SetProjectFile(p))
             );
         });
 
