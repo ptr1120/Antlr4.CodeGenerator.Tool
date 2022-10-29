@@ -10,7 +10,7 @@
 
 
 
-Just a commandline wrapper around the ANTLR (Java) tool ([Version 4.8](https://www.antlr.org/download/antlr-4.8-complete.jar)) for generating grammar artifacts.
+Just a commandline wrapper around the ANTLR (Java) tool ([Version 4.11.1](https://www.antlr.org/download/antlr-4.11.1-complete.jar)) for generating grammar artifacts.
 
 The ANTLR (Java) tool is *bundled*, so no need to download it.
 
@@ -60,6 +60,6 @@ This tool only proxies the arguments to the ANTLR (Java) tool. (See also [ANTLR 
         <_Generated>$(ProjectDir).generated\</_Generated>
         <_Namespace>MyCalculator</_Namespace>
       </PropertyGroup>
-       <Exec Command="dotnet antlr4-tool -Dlanguage=CSharp  -o $(_Generated) -visitor -listener -package $(_Namespace)  $(_GrammarFile)" />
+       <Exec Command="dotnet antlr4-tool -Dlanguage=CSharp  -o &quot;$(_Generated)&quot; -visitor -listener -package $(_Namespace) &quot;$(_GrammarFile)&quot;" />
     </Target>
     ```

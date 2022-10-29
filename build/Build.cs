@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using JetBrains.Annotations;
 using Nuke.Common;
 using Nuke.Common.CI;
@@ -11,23 +12,21 @@ using Nuke.Common.ProjectModel;
 using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
 using Nuke.Common.Tools.GitVersion;
-using Nuke.Common.Utilities;
 using Nuke.Common.Utilities.Collections;
 using static Nuke.Common.ChangeLog.ChangelogTasks;
-using static Nuke.Common.EnvironmentInfo;
 using static Nuke.Common.IO.FileSystemTasks;
 using static Nuke.Common.IO.HttpTasks;
-using static Nuke.Common.IO.PathConstruction;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 using static Nuke.Common.Tools.Git.GitTasks;
 
-[CheckBuildProjectConfigurations]
+namespace _build;
+
 [UnsetVisualStudioEnvironmentVariables]
 [AzurePipelines(
     suffix: null,
     AzurePipelinesImage.WindowsLatest,
     InvokedTargets = new[] { nameof(PackNuget), nameof(InstallTool), nameof(PublishNuget) },
-    NonEntryTargets = new[] { nameof(Restore), nameof(DownloadAntlrTool), nameof(BuildSolution) },
+    NonEntryTargets = new[] { nameof(Restore), nameof(DownloadAntlrTool), nameof(BuildProject) },
     ExcludedTargets = new[] { nameof(Clean), nameof(Release), nameof(Changelog) },
     AutoGenerate = false // todo download artifacts not working!
 )]
@@ -38,13 +37,13 @@ class Build : NukeBuild
     ///   - JetBrains Rider            https://nuke.build/rider
     ///   - Microsoft VisualStudio     https://nuke.build/visualstudio
     ///   - Microsoft VSCode           https://nuke.build/vscode
-    public static int Main() => Execute<Build>(x => x.BuildSolution);
+    public static int Main() => Execute<Build>(x => x.BuildProject);
 
     [Parameter("Configuration to build - Default is 'Debug' (local) or 'Release' (server)")]
     readonly Configuration Configuration = IsLocalBuild ? Configuration.Debug : Configuration.Release;
 
     [Parameter("The ANTLR Java tool version.")]
-    readonly string AntlrVersion = "4.8";
+    readonly string AntlrVersion = "4.11.1";
 
     [Parameter("NuGet Api Key")]
     readonly string NugetApiKey;
@@ -61,7 +60,7 @@ class Build : NukeBuild
     [GitRepository]
     readonly GitRepository GitRepository;
 
-    [GitVersion(Framework = "netcoreapp3.1", UpdateBuildNumber = true)]
+    [GitVersion(Framework = "net6.0", UpdateBuildNumber = true)]
     readonly GitVersion GitVersion;
 
     [CI]
@@ -78,11 +77,8 @@ class Build : NukeBuild
     const string MasterBranch = "master";
     const string DevelopBranch = "develop";
     const string ReleaseBranchPrefix = "release";
-    const string HotfixBranchPrefix = "hotfix";
 
-    bool DoPublishNuget => GitRepository.IsOnMasterBranch()
-                           || GitRepository.IsOnHotfixBranch()
-                           || GitRepository.IsOnReleaseBranch();
+    bool DoPublishNuget => GitRepository.Tags.Any();
 
     Project ToolProject => Solution.GetProject("Antlr4.CodeGenerator.Tool");
     string TooId => "Antlr4CodeGenerator.Tool";
@@ -113,23 +109,23 @@ class Build : NukeBuild
         .DependsOn(Clean, DownloadAntlrTool)
         .Executes(() =>
         {
-            ProcessTasks.StartProcess("dotnet", "tool restore")
-                .AssertZeroExitCode();
             DotNetRestore(s => s
                 .SetProjectFile(Solution));
         });
 
 
-    Target BuildSolution => _ => _
+    Target BuildProject => _ => _
         .DependsOn(Restore)
         .Executes(() =>
         {
             DotNetBuild(_ => _
-                .SetProjectFile(Solution)
+                .SetProjectFile(ToolProject)
                 .SetConfiguration(Configuration)
                 .SetAssemblyVersion(GitVersion.AssemblySemVer)
                 .SetFileVersion(GitVersion.AssemblySemFileVer)
                 .SetInformationalVersion(GitVersion.InformationalVersion)
+                .SetProperty("Deterministic", IsServerBuild)
+                .SetProperty("ContinuousIntegrationBuild", IsServerBuild)
                 .EnableNoRestore()
             );
         });
@@ -140,7 +136,7 @@ class Build : NukeBuild
         .Executes(() =>
         {
             FinalizeChangelog(ChangelogFile, GitVersion.MajorMinorPatch, GitRepository);
-            Logger.Info("Please review CHANGELOG.md and press any key to continue...");
+            Serilog.Log.Information("Please review CHANGELOG.md and press any key to continue...");
             Console.ReadKey();
 
             Git($"add {ChangelogFile}");
@@ -156,7 +152,7 @@ class Build : NukeBuild
             if (!GitRepository.IsOnReleaseBranch())
             {
                 var hasCleanWorkingCopy = GitHasCleanWorkingCopy();
-                ControlFlow.Assert(hasCleanWorkingCopy, "Working directory has changes.");
+                Assert.True(hasCleanWorkingCopy, "Working directory has changes.");
                 Git($"checkout -b {ReleaseBranchPrefix}/{GitVersion.MajorMinorPatch} {DevelopBranch}");
             }
             else
@@ -165,7 +161,7 @@ class Build : NukeBuild
 
     Target PackNuget => _ => _
         .Produces(NugetOutputPath)
-        .DependsOn(BuildSolution)
+        .DependsOn(BuildProject)
         .Executes(() =>
         {
             var projectsToPack = new[]
@@ -176,6 +172,12 @@ class Build : NukeBuild
                 .SetOutputDirectory(NugetOutputPath)
                 .SetConfiguration(Configuration)
                 .SetVersion(GitVersion.NuGetVersionV2)
+                .SetProperty("Deterministic", IsServerBuild)
+                .SetProperty("ContinuousIntegrationBuild", IsServerBuild)
+                .SetRepositoryType("git")
+                .SetRepositoryUrl(GitRepository.HttpsUrl)
+                .SetProperty("RepositoryBranch", GitRepository.Branch)
+                .SetProperty("RepositoryCommit", GitRepository.Commit)
                 .EnableNoBuild()
                 .EnableIncludeSymbols()
                 .SetSymbolPackageFormat(DotNetSymbolPackageFormat.snupkg)
@@ -189,7 +191,7 @@ class Build : NukeBuild
         .Consumes(PackNuget)
         .Executes(() =>
         {
-            ControlFlow.SuppressErrors(() => DotNet($"tool uninstall -g {TooId}"));
+            // ControlFlow.SuppressErrors(() => DotNet($"tool uninstall -g {TooId}"));
             DotNet($"tool install -g {TooId} --add-source {NugetOutputPath} --version {GitVersion.NuGetVersionV2}");
         });
 
@@ -201,13 +203,15 @@ class Build : NukeBuild
         .Requires(() => Configuration.Equals(Configuration.Release))
         .Executes(() =>
         {
-            NugetApiKey.NotEmpty();
+            NugetApiKey.NotNullOrEmpty();
+            var nugetPackages = NugetOutputPath.GlobFiles("*.nupkg");
+            Assert.NotEmpty(nugetPackages);
             DotNetNuGetPush(_ => _
                     .SetSource(NugetSource)
                     .SetApiKey(NugetApiKey)
                     .SetSymbolSource(SymbolSource)
                     .CombineWith(
-                        NugetOutputPath.GlobFiles("*.nupkg").NotEmpty(), (_, v) => _
+                        nugetPackages, (_, v) => _
                             .SetTargetPath(v)),
                 degreeOfParallelism: 5,
                 completeOnFailure: true);

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
     <PropertyGroup>
-        <LangVersion>8</LangVersion>
+        <LangVersion>10</LangVersion>
         <NoWarn>1701;1702;1591</NoWarn>
         <DebugSymbols>True</DebugSymbols>
         <DebugType>full</DebugType>
