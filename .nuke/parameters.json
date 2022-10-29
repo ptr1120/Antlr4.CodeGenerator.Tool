@@ -1,0 +1,4 @@
+{
+  "$schema": "./build.schema.json",
+  "Solution": "Antlr4.CodeGenerator.Tool.sln"
+}

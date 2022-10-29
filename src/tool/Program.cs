@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Antlr4.CodeGenerator.Tool
 {
@@ -11,43 +12,48 @@ namespace Antlr4.CodeGenerator.Tool
         private const string ExecutableName = "java";
 
         private static readonly string AntlrToolPath =
-            Path.Combine(Path.GetDirectoryName(typeof(Program).Assembly.Location) ?? ".", "tools", "antlr-4.8-complete.jar");
+            Path.Combine(Path.GetDirectoryName(typeof(Program).Assembly.Location) ?? ".", "tools", "antlr-4.11.1-complete.jar");
 
         private static readonly string[] JavaArgs = { "-jar", AntlrToolPath };
 
-        private static int Main(string[] args)
+        private static async Task<int> Main(string[] args)
         {
             Console.WriteLine($"Executing: {ExecutableName} {string.Join(" ", JavaArgs.Concat(args))}");
+            var startInfo = new ProcessStartInfo
+            {
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                WindowStyle = ProcessWindowStyle.Hidden,
+                FileName = ExecutableName,
+                RedirectStandardError = true,
+                RedirectStandardOutput = true,
+                StandardErrorEncoding = Encoding.UTF8,
+                StandardOutputEncoding = Encoding.UTF8,
+            };
+            foreach (var arg in JavaArgs.Concat(args))
+            {
+                startInfo.ArgumentList.Add(arg);
+            }
+
             using var process = new Process
             {
-                StartInfo = new ProcessStartInfo
-                {
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                    WindowStyle = ProcessWindowStyle.Hidden,
-                    FileName = ExecutableName,
-                    Arguments = string.Join(" ", JavaArgs.Concat(args)),
-                    RedirectStandardError = true,
-                    RedirectStandardOutput = true,
-                    StandardErrorEncoding = Encoding.UTF8,
-                    StandardOutputEncoding = Encoding.UTF8,
-                }
+                StartInfo = startInfo
             };
             process.Start();
 
-            var error = process.StandardError.ReadToEnd();
+            var error = await process.StandardError.ReadToEndAsync();
             if (!string.IsNullOrEmpty(error))
             {
-                Console.Error.WriteLine($"Error: {error}");
+               await Console.Error.WriteLineAsync($"Error: {error}");
             }
 
-            var info = process.StandardOutput.ReadToEnd();
+            var info = await process.StandardOutput.ReadToEndAsync();
             if (!string.IsNullOrEmpty(info))
             {
                 Console.WriteLine($"Info: {info}");
             }
 
-            process.WaitForExit();
+            await process.WaitForExitAsync();
             return process.ExitCode;
         }
     }

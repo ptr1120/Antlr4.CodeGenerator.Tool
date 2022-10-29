@@ -39,3 +39,4 @@ msbuild.wrn
 *.jar
 .artifacts
 .tmp
+/.nuke/temp/
