@@ -43,16 +43,13 @@ class Build : NukeBuild
     readonly Configuration Configuration = IsLocalBuild ? Configuration.Debug : Configuration.Release;
 
     [Parameter("The ANTLR Java tool version.")]
-    readonly string AntlrVersion = "4.11.1";
+    readonly string AntlrVersion = "4.12.0";
 
     [Parameter("NuGet Api Key")]
     readonly string NugetApiKey;
 
     [Parameter("NuGet Source for Packages")]
     readonly string NugetSource = "https://api.nuget.org/v3/index.json";
-
-    [Parameter("API endpoint to push NuGet source packages")]
-    readonly string SymbolSource = "https://nuget.smbsrc.net/";
 
     [Solution]
     readonly Solution Solution;
@@ -209,7 +206,6 @@ class Build : NukeBuild
             DotNetNuGetPush(_ => _
                     .SetSource(NugetSource)
                     .SetApiKey(NugetApiKey)
-                    .SetSymbolSource(SymbolSource)
                     .CombineWith(
                         nugetPackages, (_, v) => _
                             .SetTargetPath(v)),

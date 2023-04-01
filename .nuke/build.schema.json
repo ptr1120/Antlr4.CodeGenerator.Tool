@@ -100,10 +100,6 @@
           "type": "string",
           "description": "Path to a solution file that is automatically loaded"
         },
-        "SymbolSource": {
-          "type": "string",
-          "description": "API endpoint to push NuGet source packages"
-        },
         "Target": {
           "type": "array",
           "description": "List of targets to be invoked. Default is '{default_target}'",

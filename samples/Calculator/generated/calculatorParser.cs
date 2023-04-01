@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from C:\Source\Antlr4.CodeGenerator.Tool\samples\Calculator\calculator.g4 by ANTLR 4.11.1
+// Generated from calculator.g4 by ANTLR 4.11.1
 
 // Unreachable code detected
 #pragma warning disable 0162

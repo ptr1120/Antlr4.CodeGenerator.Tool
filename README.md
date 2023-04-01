@@ -10,7 +10,7 @@
 
 
 
-Just a commandline wrapper around the ANTLR (Java) tool ([Version 4.11.1](https://www.antlr.org/download/antlr-4.11.1-complete.jar)) for generating grammar artifacts.
+Just a commandline wrapper around the ANTLR (Java) tool ([Version 4.12.0](https://www.antlr.org/download/antlr-4.12.0-complete.jar)) for generating grammar artifacts.
 
 The ANTLR (Java) tool is *bundled*, so no need to download it.
 
