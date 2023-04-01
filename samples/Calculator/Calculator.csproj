@@ -5,13 +5,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Antlr4.Runtime.Standard" Version="4.11.1" />
+      <PackageReference Include="Antlr4.Runtime.Standard" Version="4.12.0" />
     </ItemGroup>
 
     <Target Name="GenerateAntlrArtifacts" BeforeTargets="BeforeResolveReferences">
         <PropertyGroup>
-            <_GrammarFile>$(ProjectDir)calculator.g4</_GrammarFile>
-            <_Generated>$(ProjectDir)generated</_Generated>
+            <_GrammarFile>calculator.g4</_GrammarFile>
+            <_Generated>generated</_Generated>
             <_Namespace>MyCalculator</_Namespace>
         </PropertyGroup>
         <Exec Command="dotnet antlr4-tool -Dlanguage=CSharp  -o &quot;$(_Generated)&quot; -visitor -listener -package $(_Namespace)  &quot;$(_GrammarFile)&quot;" />

@@ -12,7 +12,7 @@ namespace Antlr4.CodeGenerator.Tool
         private const string ExecutableName = "java";
 
         private static readonly string AntlrToolPath =
-            Path.Combine(Path.GetDirectoryName(typeof(Program).Assembly.Location) ?? ".", "tools", "antlr-4.11.1-complete.jar");
+            Path.Combine(Path.GetDirectoryName(typeof(Program).Assembly.Location) ?? ".", "tools", "antlr-4.12.0-complete.jar");
 
         private static readonly string[] JavaArgs = { "-jar", AntlrToolPath };
 
