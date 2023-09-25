@@ -35,19 +35,7 @@ stages:
             inputs:
               artifactName: nupkg
               pathtoPublish: '.artifacts/nupkg'
-      - job: InstallTool
-        displayName: 'InstallTool'
-        dependsOn: [ PackNuget ]
-        steps:
-          - template: azure-templates/jdk.yml
-          - task:  DownloadBuildArtifacts@0
-            displayName: Download Nuget artifacts
-            inputs:
-              artifactName: 'nupkg'
-              downloadPath: $(Build.SourcesDirectory)/.artifacts
-          - task: CmdLine@2
-            inputs:
-              script: './build.cmd InstallTool --skip'
+
       - job: PublishNuget
         displayName: 'PublishNuget'
         dependsOn: [ InstallTool ]
@@ -60,3 +48,17 @@ stages:
           - task: CmdLine@2
             inputs:
               script: './build.cmd PublishNuget --nuget-api-key $(NugetApiKey) --skip'
+
+      - job: InstallTool
+        displayName: 'InstallTool'
+        dependsOn: [ PackNuget ]
+        steps:
+            - template: azure-templates/jdk.yml
+            - task:  DownloadBuildArtifacts@0
+              displayName: Download Nuget artifacts
+              inputs:
+                  artifactName: 'nupkg'
+                  downloadPath: $(Build.SourcesDirectory)/.artifacts
+            - task: CmdLine@2
+              inputs:
+                  script: './build.cmd InstallTool --skip'
