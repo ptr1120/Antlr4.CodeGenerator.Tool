@@ -5,7 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [vNext]
-
+- Updated dependencies:
+    - Antlr 4.12.0 -> 4.13.1
 ## [2.1.0] / 2023-04-01
 - Updated dependencies:
     - Antlr 4.11.1 -> 4.12.0

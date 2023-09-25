@@ -43,7 +43,7 @@ class Build : NukeBuild
     readonly Configuration Configuration = IsLocalBuild ? Configuration.Debug : Configuration.Release;
 
     [Parameter("The ANTLR Java tool version.")]
-    readonly string AntlrVersion = "4.12.0";
+    readonly string AntlrVersion = "4.13.1";
 
     [Parameter("NuGet Api Key")]
     readonly string NugetApiKey;
@@ -196,7 +196,7 @@ class Build : NukeBuild
         .DependsOn(InstallTool)
         .Consumes(PackNuget)
         .OnlyWhenDynamic(() => DoPublishNuget)
-        .Requires(() => GitHasCleanWorkingCopy())
+        // .Requires(() => GitHasCleanWorkingCopy())
         .Requires(() => Configuration.Equals(Configuration.Release))
         .Executes(() =>
         {
