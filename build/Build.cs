@@ -57,7 +57,7 @@ class Build : NukeBuild
     [GitRepository]
     readonly GitRepository GitRepository;
 
-    [GitVersion(Framework = "net6.0", UpdateBuildNumber = true)]
+    [GitVersion(Framework = "net8.0", UpdateBuildNumber = true)]
     readonly GitVersion GitVersion;
 
     [CI]
